@@ -1,0 +1,81 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tanzu-cluster-essentials-bootstrap
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: tanzu-cluster-essentials-bootstrap-sa
+  namespace: tanzu-cluster-essentials-bootstrap
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tanzu-cluster-essentials-bootstrap-role
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tanzu-cluster-essentials-bootstrap-role-binding
+subjects:
+- kind: ServiceAccount
+  name: tanzu-cluster-essentials-bootstrap-sa
+  namespace: tanzu-cluster-essentials-bootstrap
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tanzu-cluster-essentials-bootstrap-role
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - origins:
+        - local:
+            path: /home/runner/work/tanzu-cluster-essentials-bootstrap/tanzu-cluster-essentials-bootstrap/bootstrap
+        - git:
+            dirty: false
+            remoteURL: https://github.com/alexandreroman/tanzu-cluster-essentials-bootstrap
+            sha: d67ab829d708ab7f57bd8090e94413d530707021
+            tags:
+            - v1.3.0.aro1
+        url: ghcr.io/alexandreroman/tanzu-cluster-essentials-bootstrap@sha256:cbecd21a11416e76ceb3c53d2ed90dcb4350e1ccb733ce4d9d6a77efaf0f11f2
+  labels:
+    app.kubernetes.io/name: bootstrap
+    app.kubernetes.io/part-of: tanzu-cluster-essentials-bootstrap
+  name: tanzu-cluster-essentials-bootstrap
+  namespace: tanzu-cluster-essentials-bootstrap
+spec:
+  activeDeadlineSeconds: 1800
+  backoffLimit: 1
+  template:
+    spec:
+      containers:
+      - env:
+        - name: INSTALL_BUNDLE
+          value: registry.tanzu.vmware.com/tanzu-cluster-essentials/cluster-essentials-bundle@sha256:54bf611711923dccd7c7f10603c846782b90644d48f1cb570b43a082d18e23b9
+        - name: INSTALL_REGISTRY_HOSTNAME
+          value: registry.tanzu.vmware.com
+        envFrom:
+        - secretRef:
+            name: tanzu-cluster-essentials-bootstrap-credentials
+        image: ghcr.io/alexandreroman/tanzu-cluster-essentials-bootstrap@sha256:cbecd21a11416e76ceb3c53d2ed90dcb4350e1ccb733ce4d9d6a77efaf0f11f2
+        name: bootstrap
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1000
+      restartPolicy: Never
+      serviceAccount: tanzu-cluster-essentials-bootstrap-sa
+  ttlSecondsAfterFinished: 120

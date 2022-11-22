@@ -1,0 +1,18 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Namespace"}),expects=1
+---
+#@@overlay/remove
+
+#@overlay/match by=overlay.subset({"metadata": {"namespace": "tanzu-cluster-essentials-bootstrap"}}),expects="1+"
+---
+metadata:
+  namespace: tap-installer
+
+#@overlay/match by=overlay.subset({"kind": "ClusterRoleBinding"}),expects=1
+---
+subjects:
+#@overlay/match by=overlay.index(0)
+- kind: ServiceAccount
+  name: tanzu-cluster-essentials-bootstrap-sa
+  namespace: tap-installer

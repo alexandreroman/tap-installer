@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tap-installer
+  namespace: tap-installer
+  annotations:
+    kapp.k14s.io/versioned: ""
+    kapp.k14s.io/versioned-keep-original: ""
+stringData:
+  values.yaml: |
+    tanzu_network:
+    	username: "johndoe@corp.com"
+      password: "changeme"
+    registry:
+      username: "johndoe"
+      password: "changeme"
+      hostname: harbor.corp.com
+      repository: tap
+    tap:
+      title: Tanzu Application Platform
+      catalog: https://github.com/Tanzu-Solutions-Engineering/waas-tap-gui-catalog/blob/main/catalog-info.yaml
+      ingress:
+        domain: apps.corp.com
+      supply_chain: basic
+      db:
+        type: pg
+        username: "psqladmin"
+        password: "changeme"
+        hostname: postgresql.corp.com
+        port: 5432
+    git:
+      username: "johndoe"
+      password: "changeme"
+      hostname: github.com
+    github:
+      access_token: changeme
+    oidc:
+      client_id: changeme
+      client_secret: changeme
+      provider: github
+    jobs:
+      skip:
+      - relocate-images

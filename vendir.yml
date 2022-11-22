@@ -1,0 +1,17 @@
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: installer/vendor
+  contents:
+  - path: tanzu-cluster-essentials-bootstrap
+    newRootPath: tanzu-cluster-essentials-bootstrap
+    includePaths:
+    - "**/*.yaml"
+    githubRelease:
+      slug: alexandreroman/tanzu-cluster-essentials-bootstrap
+      tag: v1.3.0.aro1
+      disableAutoChecksumValidation: true
+      assetNames:
+      - tanzu-cluster-essentials-bootstrap.zip
+      unpackArchive:
+        path: tanzu-cluster-essentials-bootstrap.zip

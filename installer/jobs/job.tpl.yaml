@@ -1,0 +1,52 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: #@ data.values.job.name
+  namespace: tap-installer
+  labels:
+    app.kubernetes.io/name: #@ data.values.job.name
+    app.kubernetes.io/part-of: tap-installer
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 3600
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: #@ data.values.job.name
+        app.kubernetes.io/part-of: tap-installer
+    spec:
+      restartPolicy: Never
+      serviceAccount: tap-installer-sa
+      containers:
+      - name: job
+        image: #@ data.values.job.image
+        command:
+        - /bin/bash
+        - -c
+        - #@ data.values.job.command
+        securityContext:
+          runAsUser: 1000
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        envFrom:
+        - configMapRef:
+            name: tap-installer
+        env:
+        - name: TAP_INSTALLER_CONFIG
+          value: /home/tap-installer/config/values.yaml
+        volumeMounts:
+          - name: config
+            readOnly: true
+            mountPath: /home/tap-installer/config/values.yaml
+            subPath: values.yaml
+      volumes:
+      - name: config
+        secret:
+          secretName: tap-installer

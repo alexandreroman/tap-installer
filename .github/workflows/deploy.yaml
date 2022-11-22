@@ -1,0 +1,59 @@
+name: Deploy installer image
+
+on:
+  push:
+    branches:
+    - main
+    - feature/**
+    paths:
+    - installer/**
+    - .github/workflows/deploy.yaml
+
+env:
+  IMAGE: ghcr.io/alexandreroman/tap-installer
+
+jobs:
+  deploy:
+    if: always()
+    runs-on: ubuntu-latest
+    outputs:
+      image-with-digest: ${{ steps.get-image-digest.outputs.image-with-digest }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: vmware-tanzu/carvel-setup-action@v1
+    - uses: docker/login-action@v2.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - uses: docker/build-push-action@v3.2.0
+      with:
+        context: installer
+        push: true
+        tags: ${{ env.IMAGE }}:latest
+    - name: Get image digest
+      id: get-image-digest
+      run: |
+        IMAGE_WITH_DIGEST=$(imgpkg tag resolve -i "$IMAGE:latest")
+        echo "image-with-digest=$IMAGE_WITH_DIGEST" >> $GITHUB_OUTPUT
+
+  sign:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+    - uses: docker/login-action@v2.1.0
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - uses: sigstore/cosign-installer@main
+    - name: Get signing key
+      run: echo "${{ secrets.SIGNING_SECRET }}" > cosign.key
+    - name: Sign image
+      run: |
+        IMAGE_WITH_DIGEST=${{needs.deploy.outputs.image-with-digest}}
+        cosign sign --key cosign.key "$IMAGE_WITH_DIGEST"
+      env:
+        COSIGN_PASSWORD: ""
