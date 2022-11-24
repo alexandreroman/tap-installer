@@ -9,7 +9,7 @@ metadata:
 stringData:
   values.yaml: |
     tanzu_network:
-    	username: "johndoe@corp.com"
+      username: "johndoe@corp.com"
       password: "changeme"
     registry:
       username: "johndoe"
@@ -40,4 +40,3 @@ stringData:
       provider: github
     jobs:
       skip:
-      - relocate-images
