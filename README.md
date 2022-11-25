@@ -22,7 +22,7 @@ and configuring TAP. No need to worry about CLI tools such as `tanzu`.
 
 **Please note that this project is authored by a VMware employee under open source license terms.**
 
-This is obviouly not production ready!
+This is obviously not production ready!
 
 ## Contribute
 
