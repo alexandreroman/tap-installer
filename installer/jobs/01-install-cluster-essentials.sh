@@ -32,6 +32,7 @@ else
   ytt -f "${TAP_INSTALLER_CONFIG}" \
       -f "${BOOTSTRAP_CONFIG}" \
       -f "overlays/fix-ns-tanzu-cluster-essentials-bootstrap.yaml" \
+      -f "overlays/set-labels-tanzu-cluster-essentials-bootstrap.yaml" \
       -f "vendor/tanzu-cluster-essentials-bootstrap" | \
     kapp deploy --wait-timeout=30m -c -y -a tanzu-cluster-essentials-bootstrap -f-
 fi

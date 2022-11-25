@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Job"}),expects=1
+---
+spec:
+  template:
+    #@overlay/match missing_ok=True
+    metadata:
+      labels:
+        app.kubernetes.io/name: tanzu-cluster-essentials-bootstrap
+        app.kubernetes.io/part-of: tap-installer
+        app.kubernetes.io/component: job
