@@ -8,35 +8,63 @@ metadata:
     kapp.k14s.io/versioned-keep-original: ""
 stringData:
   values.yaml: |
+    #! Set Tanzu Network credentials.
     tanzu_network:
       username: "johndoe@corp.com"
       password: "changeme"
+
+    #! Set registry parameters.
     registry:
       username: "johndoe"
       password: "changeme"
       hostname: harbor.corp.com
       repository: tap
+
     tap:
+      #! Set title in tap-gui (optional).
       title: Tanzu Application Platform
+
+      #! Set default catalog (optional).
       catalog: https://github.com/Tanzu-Solutions-Engineering/waas-tap-gui-catalog/blob/main/catalog-info.yaml
+
+      #! Set shared ingress.
       ingress:
         domain: apps.corp.com
+
+      #! Set supply chain to use (optional, default is "basic").
       supply_chain: basic
+
+      #! Set database for Backstage (optional).
       db:
         type: pg
         username: "psqladmin"
         password: "changeme"
         hostname: postgresql.corp.com
         port: 5432
+
+    #! Set Git credentials (optional).
     git:
       username: "johndoe"
       password: "changeme"
       hostname: github.com
+
+    #! Set GitHub access token, if any (optional).
     github:
       access_token: changeme
+
+    #! Set OIDC for authentication (optional).
     oidc:
       client_id: changeme
       client_secret: changeme
       provider: github
+
+    #! Set installation jobs to skip (optional, array).
+    #! Possible values are:
+    #! - install-cluster-essentials
+    #! - relocate-images
+    #! - create-namespace
+    #! - add-repo
+    #! - create-apps-namespace
+    #! - install-tap
     jobs:
       skip:
