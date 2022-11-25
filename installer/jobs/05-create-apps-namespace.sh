@@ -99,6 +99,7 @@ else
 fi
 
 # Kickstart next job.
+echo "Kickstarting next job: install-tap"
 ytt -f jobs/job.tpl.yaml \
     -v job.name=install-tap \
     -v job.command=${HOME}/jobs/06-install-tap.sh \

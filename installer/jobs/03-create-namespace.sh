@@ -24,6 +24,7 @@ EOF
 fi
 
 # Kickstart next job.
+echo "Kickstarting next job: add-repo"
 ytt -f jobs/job.tpl.yaml \
     -v job.name=add-repo \
     -v job.command=${HOME}/jobs/04-add-repo.sh \

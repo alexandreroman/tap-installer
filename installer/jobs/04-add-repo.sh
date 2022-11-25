@@ -94,6 +94,7 @@ else
 fi
 
 # Kickstart next job.
+echo "Kickstarting next job: create-apps-namespace"
 ytt -f jobs/job.tpl.yaml \
     -v job.name=create-apps-namespace \
     -v job.command=${HOME}/jobs/05-create-apps-namespace.sh \

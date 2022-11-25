@@ -15,6 +15,7 @@ echo "TAP Installer version ${TAP_INSTALLER_VERSION}"
 echo "Copyright (c) 2022 VMware Inc. All Rights Reserved."
 
 # Kickstart the first job.
+echo "Kickstarting next job: install-cluster-essentials"
 ytt -f jobs/job.tpl.yaml \
     -v job.name=install-cluster-essentials \
     -v job.command=${HOME}/jobs/01-install-cluster-essentials.sh \

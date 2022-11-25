@@ -19,6 +19,7 @@ spec:
       labels:
         app.kubernetes.io/name: tap-installer
         app.kubernetes.io/part-of: tap-installer
+        app.kubernetes.io/component: job
     spec:
       restartPolicy: Never
       serviceAccount: tap-installer-sa

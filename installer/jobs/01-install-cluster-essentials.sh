@@ -37,6 +37,7 @@ else
 fi
 
 # Kickstart next job.
+echo "Kickstarting next job: relocate-images"
 ytt -f jobs/job.tpl.yaml \
     -v job.name=relocate-images \
     -v job.command=${HOME}/jobs/02-relocate-images.sh \
