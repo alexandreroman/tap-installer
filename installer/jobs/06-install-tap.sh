@@ -132,6 +132,7 @@ metadata:
     kapp.k14s.io/change-group: tap-install/pkg
     kapp.k14s.io/change-rule: upsert after upserting tap-install/rbac
     kapp.k14s.io/change-rule.repo: upsert after upserting tap-install/tap-repo
+    ext.packaging.carvel.dev/ytt-paths-from-secret-name.0: overlay-fix-contour
 spec:
   packageRef:
     refName: tap.tanzu.vmware.com
@@ -143,6 +144,53 @@ spec:
   values:
   - secretRef:
       name: tap-values
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: overlay-fix-contour
+  namespace: ${TAP_NS}
+stringData:
+  fix-contour.yml: |
+    #@ load("@ytt:overlay", "overlay")
+    #@overlay/match by=overlay.subset({"metadata": { "name": "contour" }, "kind": "PackageInstall"}),expects=1
+    ---
+    metadata:
+      annotations:
+        #@overlay/match missing_ok=True
+        ext.packaging.carvel.dev/ytt-paths-from-secret-name.0: overlay-fix-contour-ipv6
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: overlay-fix-contour-ipv6
+  namespace: ${TAP_NS}
+stringData:
+  fix-contour-ipv6.yml: |
+    #@ load("@ytt:overlay", "overlay")
+    #@overlay/match by=overlay.subset({"kind": "Deployment"}),expects=1
+    ---
+    spec:
+      template:
+        spec:
+          containers:
+          #@overlay/match by=overlay.map_key("name")
+          - name: contour
+            #@overlay/replace
+            args:
+            - serve
+            - --incluster
+            - '--xds-address=0.0.0.0'
+            - --xds-port=8001
+            - '--stats-address=0.0.0.0'
+            - '--http-address=0.0.0.0'
+            - '--envoy-service-http-address=0.0.0.0'
+            - '--envoy-service-https-address=0.0.0.0'
+            - '--health-address=0.0.0.0'
+            - --contour-cafile=/certs/ca.crt
+            - --contour-cert-file=/certs/tls.crt
+            - --contour-key-file=/certs/tls.key
+            - --config-path=/config/contour.yaml
 EOF
 
 # Create TAP RBAC used for package installation.
