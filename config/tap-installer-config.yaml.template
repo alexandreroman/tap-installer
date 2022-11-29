@@ -46,7 +46,6 @@ stringData:
     git:
       username: "johndoe"
       password: "changeme"
-      hostname: github.com
 
     #! Set GitHub access token, if any (optional).
     github:

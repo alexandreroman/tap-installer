@@ -36,14 +36,20 @@ excluded_packages:
 #@ if/end "supply_chain" in data.values.tap:
 supply_chain: #@ data.values.tap.supply_chain
 ootb_supply_chain_basic:
+  #@ if "git" in data.values:
   gitops:
     ssh_secret: git-credentials
+  #@ end
 ootb_supply_chain_testing:
+  #@ if "git" in data.values:
   gitops:
     ssh_secret: git-credentials
+  #@ end
 ootb_supply_chain_testing_scanning:
+  #@ if "git" in data.values:
   gitops:
     ssh_secret: git-credentials
+  #@ end
 
 contour:
   envoy:

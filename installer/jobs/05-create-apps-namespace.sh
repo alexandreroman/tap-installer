@@ -87,6 +87,18 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
+---
+#@ if "git" in data.values:
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-credentials
+  namespace: $TAP_APPS_NS
+type: Opaque
+stringData:
+  username: #@ data.values.git.username
+  password: #@ data.values.git.password
+#@ end
 EOF
 
 if [ ! -z "$(yq '.jobs.skip[] | select(. == "create-apps-namespace")' $TAP_INSTALLER_CONFIG)" ]; then
