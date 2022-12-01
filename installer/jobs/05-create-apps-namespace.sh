@@ -51,17 +51,6 @@ type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: e30K
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: default
-  namespace: $TAP_APPS_NS
-secrets:
-- name: registry-credentials
-imagePullSecrets:
-- name: registry-credentials
-- name: tap-registry
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
@@ -108,6 +97,8 @@ else
   ytt -f "${TAP_INSTALLER_CONFIG}" \
       -f "${NS_CONFIG}" | \
     kapp deploy -c -y -a tap-ns-apps -f-
+    kubectl patch -n $TAP_APPS_NS serviceaccount default -p '{"imagePullSecrets": [{"name": "registry-credentials"}, {"name": "tap-registry"}]}'
+    kubectl patch -n $TAP_APPS_NS serviceaccount default -p '{"secrets": [{"name": "registry-credentials"}]}'
 fi
 
 # Kickstart next job.
