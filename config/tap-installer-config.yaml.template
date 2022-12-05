@@ -8,6 +8,8 @@ metadata:
     kapp.k14s.io/versioned-keep-original: ""
 stringData:
   values.yaml: |
+    #@data/values
+    ---
     #! Set Tanzu Network credentials.
     tanzu_network:
       username: "johndoe@corp.com"
