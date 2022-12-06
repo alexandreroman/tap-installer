@@ -83,7 +83,10 @@ kind: Secret
 metadata:
   name: git-credentials
   namespace: $TAP_APPS_NS
-type: Opaque
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    tekton.dev/git-0: #@ "https://".format(data.values.git.hostname)
+type: kubernetes.io/basic-auth
 stringData:
   username: #@ data.values.git.username
   password: #@ data.values.git.password
@@ -98,7 +101,7 @@ else
       -f "${NS_CONFIG}" | \
     kapp deploy -c -y -a tap-ns-apps -f-
     kubectl patch -n $TAP_APPS_NS serviceaccount default -p '{"imagePullSecrets": [{"name": "registry-credentials"}, {"name": "tap-registry"}]}'
-    kubectl patch -n $TAP_APPS_NS serviceaccount default -p '{"secrets": [{"name": "registry-credentials"}]}'
+    kubectl patch -n $TAP_APPS_NS serviceaccount default -p '{"secrets": [{"name": "registry-credentials"}, {"name": "git-credentials"}]}'
 fi
 
 # Kickstart next job.
