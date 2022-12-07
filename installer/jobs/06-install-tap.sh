@@ -107,6 +107,11 @@ scanning:
 grype:
   namespace: tap-apps
   targetImagePullSecret: tap-registry
+
+package_overlays:
+- name: contour
+  secrets:
+  - name: overlay-fix-contour-ipv6
 #@ end
 ---
 apiVersion: v1
@@ -138,7 +143,6 @@ metadata:
     kapp.k14s.io/change-group: tap-install/pkg
     kapp.k14s.io/change-rule: upsert after upserting tap-install/rbac
     kapp.k14s.io/change-rule.repo: upsert after upserting tap-install/tap-repo
-    ext.packaging.carvel.dev/ytt-paths-from-secret-name.0: overlay-fix-contour
 spec:
   packageRef:
     refName: tap.tanzu.vmware.com
@@ -150,21 +154,6 @@ spec:
   values:
   - secretRef:
       name: tap-values
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: overlay-fix-contour
-  namespace: ${TAP_NS}
-stringData:
-  fix-contour.yml: |
-    #@ load("@ytt:overlay", "overlay")
-    #@overlay/match by=overlay.subset({"metadata": { "name": "contour" }, "kind": "PackageInstall"}),expects=1
-    ---
-    metadata:
-      annotations:
-        #@overlay/match missing_ok=True
-        ext.packaging.carvel.dev/ytt-paths-from-secret-name.0: overlay-fix-contour-ipv6
 ---
 apiVersion: v1
 kind: Secret
