@@ -6,6 +6,7 @@ on:
     - main
     - feature/**
     paths:
+    - config/**
     - installer/**
     - .github/workflows/deploy.yaml
 
