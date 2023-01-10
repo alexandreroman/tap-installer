@@ -57,6 +57,8 @@ contour:
       type: LoadBalancer
       #@ if/end "ingress" in data.values.tap and "envoy" in data.values.tap.ingress and "loadBalancerIP" in data.values.tap.ingress.envoy:
       loadBalancerIP: #@ data.values.tap.ingress.envoy.loadBalancerIP
+      #@ if/end "ingress" in data.values.tap and "envoy" in data.values.tap.ingress and "annotations" in data.values.tap.ingress.envoy:
+      annotations: #@ data.values.tap.ingress.envoy.annotations
 
 tap_gui:
   service_type: ClusterIP

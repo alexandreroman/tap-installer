@@ -35,6 +35,8 @@ stringData:
         envoy:
           #! Set load balancer IP for Envoy (optional).
           loadBalancerIP: 1.2.3.4
+          #! Set service annotations (optional).
+          annotations:
 
       #! Set supply chain to use (optional, default is "basic").
       supply_chain: basic
