@@ -99,6 +99,16 @@ tap_gui:
             clientId: #@ data.values.oidc.client_id
             clientSecret: #@ data.values.oidc.client_secret
     #@ end
+    #@ if "metadata_store" in data.values.tap and data.values.tap.metadata_store.token:
+    proxy:
+      /metadata-store:
+        target: https://metadata-store-app.metadata-store:8443/api/v1
+        changeOrigin: true
+        secure: false
+        headers:
+          Authorization: #@ "Bearer {}".format(data.values.tap.metadata_store.token)
+          X-Custom-Source: project-star
+    #@ end
 
 metadata_store:
   ns_for_export_app_cert: tap-apps
