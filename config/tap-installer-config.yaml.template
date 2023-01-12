@@ -26,6 +26,9 @@ stringData:
       #! Set title in tap-gui (optional).
       title: Tanzu Application Platform
 
+      #! Set number of instances for tap-gui (optional).
+      instances: 1
+
       #! Set default catalog (optional).
       catalog: https://github.com/Tanzu-Solutions-Engineering/waas-tap-gui-catalog/blob/main/catalog-info.yaml
 

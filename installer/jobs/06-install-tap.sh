@@ -62,6 +62,9 @@ contour:
 
 tap_gui:
   service_type: ClusterIP
+  deployment:
+    #@ if/end "instances" in data.values.tap and data.values.tap.instances:
+    replicas: #@ data.values.tap.instances
   app_config:
     #@ if "title" in data.values.tap:
     customize:
