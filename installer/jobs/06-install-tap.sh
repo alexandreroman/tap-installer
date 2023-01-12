@@ -25,7 +25,7 @@ shared:
     password: #@ data.values.registry.password
 
 ceip_policy_disclosed: true
-profile: full
+profile: #@ data.values.profile
 
 excluded_packages:
 - learningcenter.tanzu.vmware.com
@@ -60,6 +60,7 @@ contour:
       #@ if/end "ingress" in data.values.tap and "envoy" in data.values.tap.ingress and "annotations" in data.values.tap.ingress.envoy:
       annotations: #@ data.values.tap.ingress.envoy.annotations
 
+#@ if data.values.profile == "full" or data.values.profile == "iterate" or data.values.profile == "view":
 tap_gui:
   service_type: ClusterIP
   deployment:
@@ -112,7 +113,9 @@ tap_gui:
           Authorization: #@ "Bearer {}".format(data.values.tap.metadata_store.token)
           X-Custom-Source: project-star
     #@ end
+#@ end
 
+#@ if data.values.profile == "full" or data.values.profile == "build":
 metadata_store:
   ns_for_export_app_cert: tap-apps
   app_service_type: ClusterIP
@@ -124,6 +127,7 @@ scanning:
 grype:
   namespace: tap-apps
   targetImagePullSecret: tap-registry
+#@ end
 
 package_overlays:
 - name: contour

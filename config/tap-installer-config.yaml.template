@@ -10,6 +10,9 @@ stringData:
   values.yaml: |
     #@data/values
     ---
+    #8 Set TAP profile to install.
+    profile: full
+
     #! Set Tanzu Network credentials.
     tanzu_network:
       username: "johndoe@corp.com"
