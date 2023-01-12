@@ -85,7 +85,7 @@ metadata:
   namespace: $TAP_APPS_NS
   annotations:
     kapp.k14s.io/update-strategy: fallback-on-replace
-    tekton.dev/git-0: #@ "https://".format(data.values.git.hostname)
+    tekton.dev/git-0: #@ "https://{}".format(data.values.git.hostname)
 type: kubernetes.io/basic-auth
 stringData:
   username: #@ data.values.git.username

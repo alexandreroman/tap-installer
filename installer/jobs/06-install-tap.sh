@@ -39,16 +39,34 @@ ootb_supply_chain_basic:
   #@ if "git" in data.values:
   gitops:
     ssh_secret: git-credentials
+    #@ if "gitops" in data.values.git:
+    server_address: #@ "https://{}".format(data.values.git.hostname)
+    repository_owner: #@ data.values.git.gitops.repository_owner
+    repository_name: #@ data.values.git.gitops.repository_name
+    branch: #@ data.values.git.gitops.branch
+    #@ end
   #@ end
 ootb_supply_chain_testing:
   #@ if "git" in data.values:
   gitops:
     ssh_secret: git-credentials
+    #@ if "gitops" in data.values.git:
+    server_address: #@ "https://{}".format(data.values.git.hostname)
+    repository_owner: #@ data.values.git.gitops.repository_owner
+    repository_name: #@ data.values.git.gitops.repository_name
+    branch: #@ data.values.git.gitops.branch
+    #@ end
   #@ end
 ootb_supply_chain_testing_scanning:
   #@ if "git" in data.values:
   gitops:
     ssh_secret: git-credentials
+    #@ if "gitops" in data.values.git:
+    server_address: #@ "https://{}".format(data.values.git.hostname)
+    repository_owner: #@ data.values.git.gitops.repository_owner
+    repository_name: #@ data.values.git.gitops.repository_name
+    branch: #@ data.values.git.gitops.branch
+    #@ end
   #@ end
 
 contour:

@@ -66,6 +66,12 @@ stringData:
       password: "changeme"
       hostname: github.com
 
+      #! Set configuration for GitOps managing Kubernetes apps (optional).
+      gitops:
+        repository_owner:
+        repository_name:
+        branch:
+
     #! Set GitHub access token, if any (optional).
     github:
       access_token: changeme
