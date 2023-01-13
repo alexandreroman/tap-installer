@@ -131,6 +131,17 @@ tap_gui:
           Authorization: #@ "Bearer {}".format(data.values.tap.metadata_store.token)
           X-Custom-Source: project-star
     #@ end
+    #@ if "clusters" in data.values.tap and len(data.values.tap.clusters) > 0:
+    kubernetes:
+      serviceLocatorMethod:
+        type: multiTenant
+      clusterLocatorMethods:
+      - type: config
+        clusters:
+        #@ for c in data.values.tap.clusters:
+        - #@ c
+        #@ end
+    #@ end
 #@ end
 
 #@ if data.values.profile == "full" or data.values.profile == "build":

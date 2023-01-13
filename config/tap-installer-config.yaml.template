@@ -59,6 +59,9 @@ stringData:
         password: "changeme"
         hostname: postgresql.corp.com
         port: 5432
+      
+      #! Set remote Kubernetes cluster configuration (optional, array).
+      clusters:
 
     #! Set Git credentials (optional).
     git:
