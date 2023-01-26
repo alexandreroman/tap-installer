@@ -163,6 +163,9 @@ package_overlays:
 - name: contour
   secrets:
   - name: overlay-fix-contour-ipv6
+- name: ootb-supply-chain-testing-scanning
+  secrets:
+  - name: overlay-remove-source-scanner
 #@ end
 ---
 apiVersion: v1
@@ -237,6 +240,29 @@ stringData:
             - --contour-cert-file=/certs/tls.crt
             - --contour-key-file=/certs/tls.key
             - --config-path=/config/contour.yaml
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: overlay-remove-source-scanner
+  namespace: ${TAP_NS}
+type: Opaque
+stringData:
+  ootb-supply-chain-testing-scanning-remove-source-scanner.yaml: |
+    #@ load("@ytt:overlay", "overlay")
+    #@overlay/match by=overlay.subset({"metadata":{"name":"source-test-scan-to-url"}, "kind": "ClusterSupplyChain"})
+    ---
+    spec:
+      resources:
+      #@overlay/match by="name"
+      #@overlay/remove
+      - name: source-scanner
+      #@overlay/match by="name"
+      - name: image-provider
+        sources:
+        #@overlay/match by="name"
+        - name: source
+          resource: source-tester
 EOF
 
 # Create TAP RBAC used for package installation.
