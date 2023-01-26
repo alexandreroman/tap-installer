@@ -151,6 +151,9 @@ scanning:
   metadataStore:
     url: ""
 
+springboot_conventions:
+  autoConfigureActuators: true
+
 grype:
   namespace: tap-apps
   targetImagePullSecret: tap-registry
