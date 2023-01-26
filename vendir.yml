@@ -9,7 +9,7 @@ directories:
     - "**/*.yaml"
     githubRelease:
       slug: alexandreroman/tanzu-cluster-essentials-bootstrap
-      tag: v1.3.0.aro1
+      tag: v1.4.0
       disableAutoChecksumValidation: true
       assetNames:
       - tanzu-cluster-essentials-bootstrap.zip
