@@ -166,6 +166,9 @@ package_overlays:
 - name: ootb-supply-chain-testing-scanning
   secrets:
   - name: overlay-remove-source-scanner
+- name: tap-telemetry
+  secrets:
+  - name: overlay-disable-tap-telemetry
 #@ end
 ---
 apiVersion: v1
@@ -263,6 +266,19 @@ stringData:
         #@overlay/match by="name"
         - name: source
           resource: source-tester
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: overlay-disable-tap-telemetry
+  namespace: ${TAP_NS}
+type: Opaque
+stringData:
+  tap-telemetry-remove.yml: |
+    #@ load("@ytt:overlay", "overlay")
+    #@overlay/match by=overlay.subset({"metadata":{"namespace":"tap-telemetry"}}), expects="1+"
+    #@overlay/remove
+    ---
 EOF
 
 # Create TAP RBAC used for package installation.
