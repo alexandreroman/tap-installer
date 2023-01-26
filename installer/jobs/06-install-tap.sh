@@ -30,8 +30,6 @@ profile: #@ data.values.profile
 excluded_packages:
 - learningcenter.tanzu.vmware.com
 - workshops.learningcenter.tanzu.vmware.com
-- policy.apps.tanzu.vmware.com
-- image-policy-webhook.signing.apps.tanzu.vmware.com
 
 #@ if/end "supply_chain" in data.values.tap:
 supply_chain: #@ data.values.tap.supply_chain
