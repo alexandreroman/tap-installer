@@ -38,6 +38,7 @@ stringData:
       #! Set shared ingress.
       ingress:
         domain: apps.corp.com
+        issuer:
         envoy:
           #! Set load balancer IP for Envoy (optional).
           loadBalancerIP: 1.2.3.4

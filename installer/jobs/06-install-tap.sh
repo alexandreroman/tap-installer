@@ -19,6 +19,8 @@ cat << EOF > "${TAP_CONFIG}"
 #@ def values():
 shared:
   ingress_domain: #@ data.values.tap.ingress.domain
+  #@ if/end "issuer" in data.values.tap.ingress:
+  ingress_issuer: #@ data.values.tap.ingress.issuer
   image_registry:
     project_path: #@ "{}/{}".format(data.values.registry.hostname, data.values.registry.repository)
     username: #@ data.values.registry.username
