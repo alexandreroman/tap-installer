@@ -64,6 +64,8 @@ stringData:
       #! Set remote Kubernetes cluster configuration (optional, array).
       clusters:
 
+      #! Set package overlays.
+      package_overlays:
     #! Set Git credentials (optional).
     git:
       username: "johndoe"

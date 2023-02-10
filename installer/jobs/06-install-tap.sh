@@ -16,6 +16,30 @@ cat << EOF > "${TAP_CONFIG}"
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
 ---
+#@ def merge_overlays():
+#@   overlays = []
+#@   if hasattr(data.values.tap, "package_overlays"):
+#@     for i in data.values.tap.package_overlays:
+#@       overlays.append(i)
+#@     end
+#@   end
+#@   overlays.extend(builtin_overlays()["builtin_package_overlays"])
+#@   return overlays
+#@ end
+
+#@ def builtin_overlays():
+builtin_package_overlays:
+- name: contour
+  secrets:
+  - name: overlay-fix-contour-ipv6
+- name: ootb-supply-chain-testing-scanning
+  secrets:
+  - name: overlay-remove-source-scanner
+- name: tap-telemetry
+  secrets:
+  - name: overlay-disable-tap-telemetry
+#@ end
+
 #@ def values():
 shared:
   ingress_domain: #@ data.values.tap.ingress.domain
@@ -32,6 +56,8 @@ profile: #@ data.values.profile
 excluded_packages:
 - learningcenter.tanzu.vmware.com
 - workshops.learningcenter.tanzu.vmware.com
+
+package_overlays: #@ merge_overlays()
 
 #@ if/end "supply_chain" in data.values.tap:
 supply_chain: #@ data.values.tap.supply_chain
@@ -161,16 +187,6 @@ grype:
   targetImagePullSecret: tap-registry
 #@ end
 
-package_overlays:
-- name: contour
-  secrets:
-  - name: overlay-fix-contour-ipv6
-- name: ootb-supply-chain-testing-scanning
-  secrets:
-  - name: overlay-remove-source-scanner
-- name: tap-telemetry
-  secrets:
-  - name: overlay-disable-tap-telemetry
 #@ end
 ---
 apiVersion: v1
