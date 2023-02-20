@@ -32,12 +32,14 @@ builtin_package_overlays:
 - name: contour
   secrets:
   - name: overlay-fix-contour-ipv6
-- name: ootb-supply-chain-testing-scanning
-  secrets:
-  - name: overlay-remove-source-scanner
 - name: tap-telemetry
   secrets:
   - name: overlay-disable-tap-telemetry
+#@ if data.values.profile == "full" or data.values.profile == "build":
+- name: ootb-supply-chain-testing-scanning
+  secrets:
+  - name: overlay-remove-source-scanner
+#@ end
 #@ end
 
 #@ def values():
@@ -271,7 +273,7 @@ type: Opaque
 stringData:
   ootb-supply-chain-testing-scanning-remove-source-scanner.yaml: |
     #@ load("@ytt:overlay", "overlay")
-    #@overlay/match by=overlay.subset({"metadata":{"name":"source-test-scan-to-url"}, "kind": "ClusterSupplyChain"})
+    #@overlay/match by=overlay.subset({"metadata":{"name":"source-test-scan-to-url"}, "kind": "ClusterSupplyChain"}),expects="0+"
     ---
     spec:
       resources:
@@ -294,7 +296,7 @@ type: Opaque
 stringData:
   tap-telemetry-remove.yml: |
     #@ load("@ytt:overlay", "overlay")
-    #@overlay/match by=overlay.subset({"metadata":{"namespace":"tap-telemetry"}}), expects="1+"
+    #@overlay/match by=overlay.subset({"metadata":{"namespace":"tap-telemetry"}}),expects="1+"
     #@overlay/remove
     ---
 EOF
