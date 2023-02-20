@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - githubRelease:
-      tag: v1.4.0
-      url: https://api.github.com/repos/alexandreroman/tanzu-cluster-essentials-bootstrap/releases/90279849
+      tag: v1.4.1
+      url: https://api.github.com/repos/alexandreroman/tanzu-cluster-essentials-bootstrap/releases/93019264
     path: tanzu-cluster-essentials-bootstrap
   path: installer/vendor
 kind: LockConfig
