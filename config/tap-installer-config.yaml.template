@@ -25,6 +25,11 @@ stringData:
       hostname: harbor.corp.com
       repository: tap
 
+    #! Set namespace provisioner configuration:
+    #! https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/1.4/tap/namespace-provisioner-how-tos.html
+    namespace_provisioner:
+      additional_sources:
+
     tap:
       #! Set title in tap-gui (optional).
       title: Tanzu Application Platform

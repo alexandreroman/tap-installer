@@ -15,6 +15,7 @@ TAP_CONFIG=$(mktemp --suffix=.yaml)
 cat << EOF > "${TAP_CONFIG}"
 #@ load("@ytt:data", "data")
 #@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:template", "template")
 ---
 #@ def merge_overlays():
 #@   overlays = []
@@ -106,6 +107,13 @@ contour:
       #@ if/end "ingress" in data.values.tap and "envoy" in data.values.tap.ingress and "annotations" in data.values.tap.ingress.envoy:
       annotations: #@ data.values.tap.ingress.envoy.annotations
 
+#@ if data.values.profile == "full" or data.values.profile == "iterate" or data.values.profile == "build":
+#@ if "namespace_provisioner" in data.values:
+namespace_provisioner:
+  _: #@ template.replace(data.values.namespace_provisioner)
+#@ end
+#@ end
+
 #@ if data.values.profile == "full" or data.values.profile == "iterate" or data.values.profile == "view":
 tap_gui:
   service_type: ClusterIP
@@ -174,7 +182,7 @@ tap_gui:
 
 #@ if data.values.profile == "full" or data.values.profile == "build":
 metadata_store:
-  ns_for_export_app_cert: tap-apps
+  ns_for_export_app_cert: "*"
   app_service_type: ClusterIP
 
 scanning:
@@ -203,6 +211,37 @@ metadata:
 type: Opaque
 stringData:
   values.yml: #@ yaml.encode(values())
+EOF
+
+NS_CONFIG=$(mktemp --suffix=.yaml)
+cat << EOF > "${NS_CONFIG}"
+#@ load("@ytt:data", "data")
+---
+#@ if "git" in data.values:
+apiVersion: v1
+kind: Secret
+metadata:
+  name: git-credentials
+  namespace: ${TAP_NS}
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+    tekton.dev/git-0: #@ "https://{}".format(data.values.git.hostname)
+type: kubernetes.io/basic-auth
+stringData:
+  username: #@ data.values.git.username
+  password: #@ data.values.git.password
+#@ end
+---
+#@ if "git" in data.values:
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretExport
+metadata:
+  name: git-credentials
+  namespace: ${TAP_NS}
+spec:
+  toNamespaces:
+  - '*'
+#@ end
 EOF
 
 # Create TAP package install.
@@ -347,6 +386,7 @@ else
   ytt -f "${TAP_INSTALLER_CONFIG}" \
       -f "${TAP_CONFIG}" \
       -f "${TAP_PKG}" \
+      -f "${NS_CONFIG}" \
       -f "${TAP_RBAC}" | \
     kapp deploy --wait-timeout=60m -c -y -a tap-install -f-
 fi

@@ -78,18 +78,15 @@ subjects:
   name: default
 ---
 #@ if "git" in data.values:
-apiVersion: v1
-kind: Secret
+apiVersion: secretgen.carvel.dev/v1alpha1
+kind: SecretImport
 metadata:
   name: git-credentials
   namespace: $TAP_APPS_NS
   annotations:
-    kapp.k14s.io/update-strategy: fallback-on-replace
     tekton.dev/git-0: #@ "https://{}".format(data.values.git.hostname)
-type: kubernetes.io/basic-auth
-stringData:
-  username: #@ data.values.git.username
-  password: #@ data.values.git.password
+spec:
+  fromNamespace: tap-install
 #@ end
 EOF
 
